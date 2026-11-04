@@ -1,4 +1,3 @@
-numpy
-opencv-python
-scikit-image
-tqdm
+numpy>=1.24
+opencv-python-headless>=4.8
+scikit-image>=0.22
