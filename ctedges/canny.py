@@ -8,7 +8,6 @@ from dataclasses import dataclass
 
 import cv2
 import numpy as np
-from skimage import morphology
 
 
 @dataclass
@@ -18,7 +17,6 @@ class CannyParams:
     # on an image scaled to [0, 1], so they mean the same thing on every slice.
     t_low: float = 0.10
     t_high: float = 0.25
-    cleanup: bool = True
 
 
 def smooth(img, sigma):
@@ -65,19 +63,12 @@ def hysteresis(mag, t_low, t_high):
     return keep[labels].astype(np.uint8)
 
 
-def cleanup(edges):
-    cleaned = morphology.remove_small_objects(edges.astype(bool), max_size=2, connectivity=2)
-    return morphology.closing(cleaned.astype(np.uint8), morphology.disk(1)).astype(np.uint8)
-
-
 def canny(img, params=None, return_steps=False):
     params = params or CannyParams()
     s = smooth(img, params.sigma)
     mag, ang = gradients(s)
     nms = non_max_suppression(mag, ang)
     edges = hysteresis(nms, params.t_low, params.t_high)
-    if params.cleanup:
-        edges = cleanup(edges)
     if return_steps:
         return edges, {"smoothed": s, "magnitude": mag, "nms": nms}
     return edges
