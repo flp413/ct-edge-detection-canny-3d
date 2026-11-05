@@ -14,9 +14,10 @@ import numpy as np
 class CannyParams:
     sigma: float = 1.4
     # Thresholds are absolute values of the Sobel gradient magnitude computed
-    # on an image scaled to [0, 1], so they mean the same thing on every slice.
-    t_low: float = 0.10
-    t_high: float = 0.25
+    # on an image scaled to [0, 1]. They were picked with
+    # scripts/sweep_thresholds.py (see README).
+    t_low: float = 0.15
+    t_high: float = 0.375
 
 
 def smooth(img, sigma):
